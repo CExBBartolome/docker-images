@@ -30,6 +30,9 @@ RUN apt-get -q update &&\
 RUN useradd -m -d /home/jenkins -s /bin/sh jenkins &&\
     echo "jenkins:jenkins" | chpasswd
 
+# Install Docker CLI tools
+RUN curl -SLf https://packages.docker.com/1.12/install.sh | sh
+
 # Standard SSH port
 EXPOSE 22
 
