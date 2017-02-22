@@ -8,7 +8,7 @@ MAINTAINER Ervin Varga <ervin.varga@gmail.com>
 # Add locales after locale-gen as needed
 # Upgrade packages on image
 # Preparations for sshd
-run locale-gen en_US.UTF-8 &&\
+RUN locale-gen en_US.UTF-8 &&\
     apt-get -q update &&\
     DEBIAN_FRONTEND="noninteractive" apt-get -q upgrade -y -o Dpkg::Options::="--force-confnew" --no-install-recommends &&\
     DEBIAN_FRONTEND="noninteractive" apt-get -q install -y -o Dpkg::Options::="--force-confnew"  --no-install-recommends openssh-server &&\
@@ -28,13 +28,19 @@ RUN apt-get -q update &&\
 
 # Set user jenkins to the image
 RUN useradd -m -d /home/jenkins -s /bin/sh jenkins &&\
-    echo "jenkins:jenkins" | chpasswd
+    echo "jenkins:jenkins" | chpasswd &&\
+    usermod -aG sudo jenkins &&\
+    chsh -s /bin/bash jenkins
 
 # Install Docker CLI tools
-RUN curl -SLf https://packages.docker.com/1.12/install.sh | sh
+RUN apt-get update && apt-get install -y curl && curl -SLf https://packages.docker.com/1.12/install.sh | sh
 
 # Standard SSH port
 EXPOSE 22
 
+WORKDIR /root
+COPY start.sh /root/start.sh
+RUN chmod a+x /root/start.sh
+
 # Default command
-CMD ["/usr/sbin/sshd", "-D"]
+CMD ["/root/start.sh"]
