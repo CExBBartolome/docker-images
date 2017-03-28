@@ -34,6 +34,7 @@ RUN useradd -m -d /home/jenkins -s /bin/sh jenkins &&\
 
 # Install Docker CLI tools
 RUN apt-get update && apt-get install -y curl && curl -SLf https://packages.docker.com/1.12/install.sh | sh
+RUN curl -L "https://github.com/docker/compose/releases/download/1.11.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 
 # Standard SSH port
 EXPOSE 22
